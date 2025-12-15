@@ -13,8 +13,8 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     min_errors = []
     stretches = []
     stretches_arrow = []
-    stretches_new = []
-    diameters_modified_mst = []
+    diameters_T = []
+    diameters_mst = []
     diameters_steiner_tree = []
         
     nodes_count = [] 
@@ -23,7 +23,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     # print("Total nodes in the graph: ", nodes_num)
     # print("Type of n: ", type(nodes_num))
         
-    fractions = []
+    # fractions = []
     # while nodes_num > 1:
     #     nodes_num //=2
     #     fractions.append(nodes_num)
@@ -61,11 +61,11 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
         )
 
         pattern8 = re.compile(
-            r"Stretch_New \(sum_of_distance_in_T_new / sum_of_distance_in_G\) =\s*([0-9.+\-eE]+)"
+            r"Diameter of final tree T =\s*([0-9.+\-eE]+)"
         )
 
         pattern6 = re.compile(
-            r"Diameter of modified MST =\s*([0-9.+\-eE]+)"
+            r"Diameter of MST_G =\s*([0-9.+\-eE]+)"
         )
 
         pattern7 = re.compile(
@@ -106,9 +106,9 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
             if m5:
                 stretch_arrow_value = float(m5.group(1))
             if m8:
-                stretch_new_value = float(m8.group(1))
+                diameter_of_T = float(m8.group(1))
             if m6:
-                diameter_of_modified_mst = int(m6.group(1))
+                diameter_of_mst = int(m6.group(1))
             if m7:
                 diameter_of_steiner_tree = int(m7.group(1))
         
@@ -120,8 +120,8 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
         min_errors.append(min_error_value)
         stretches.append(stretch_value)
         stretches_arrow.append(stretch_arrow_value)
-        stretches_new.append(stretch_new_value)
-        diameters_modified_mst.append(diameter_of_modified_mst)
+        diameters_T.append(diameter_of_T)
+        diameters_mst.append(diameter_of_mst)
         diameters_steiner_tree.append(diameter_of_steiner_tree)
         nodes_count.append(num_nodes)
 
@@ -139,7 +139,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     filename = str(nodes_count[0])+"nodes_diameter"+str(diameter_value)+"_cutoff"+str(error_cutoff)+"-repetitions"+str(repetitions)+ "-overlap"+str(overlap)+".png"
 
     # plot_error_and_stretch_graph_with_boxplot(fractions, errors, filename, repetitions, stretches, error_cutoff, overlap)
-    save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, stretches_new, diameters_modified_mst, diameters_steiner_tree, filename, repetitions, error_cutoff)
+    save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, diameters_T, diameters_mst, diameters_steiner_tree, filename, repetitions, error_cutoff)
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Running the experiment with different fractions of predicted nodes and with different graphs... ")

@@ -392,7 +392,7 @@ def sample_Q_within_diameter_with_overlap(G, Vp, error_cutoff, overlap, fraction
 
 
 # def calculate_stretch(G_example, T, T_new, mst_g, Vp, fraction, owner, error_cutoff, overlap, myNodeCount, diameter_of_G):
-def calculate_stretch(G_example, Q, T, mst_g, Vp, fraction, owner, error_cutoff, overlap, myNodeCount, diameter_of_G):
+def calculate_stretch(G_example, Q, T, mst_g, owner, myNodeCount):
     # V is the set of all vertices in the graph G.
     # print("type of vp is", type(Vp))
     V = list(range(myNodeCount))
@@ -489,7 +489,6 @@ def calculate_stretch(G_example, Q, T, mst_g, Vp, fraction, owner, error_cutoff,
     print(f"{GREEN}\nStretch (sum_of_distance_in_T / sum_of_distance_in_G) = {stretch}{RESET}")
     print(f"{SKY_BLUE}\nStretch_Arrow (sum_of_distance_in_mst_g / sum_of_distance_in_G) = {stretch_arrow}{RESET}")
     # print(f"{MAGENTA}\nStretch_New (sum_of_distance_in_T_new / sum_of_distance_in_G) = {stretch_new}{RESET}")
-    return Q
 
 
 def calculate_error(Q, Vp, G_example, diameter_of_G, diameter_of_T):
@@ -584,7 +583,7 @@ def serve_requests_remove_by_id(VpAndQ):
     while remaining:
         n = len(remaining)
         num_to_extract = rng.randint(1, max(1, n // 2))
-        print(f"num_to_extract: {num_to_extract}")
+        # print(f"num_to_extract: {num_to_extract}")
 
         # 2. Create a working copy of the pool so we can remove items as we pick them
         pool = list(remaining)
@@ -618,11 +617,11 @@ def serve_requests_remove_by_id(VpAndQ):
 
         # Another random number in [1, max(1, len(random_selected_VpAndQ_pairs))]
         next_release_frequency = rng.randint(1, max(1, len(random_selected_VpAndQ_pairs) // 2))
-        print(f"next_release_frequency: {next_release_frequency}")
+        # print(f"next_release_frequency: {next_release_frequency}")
 
         # Serve first next_release_frequency from subset
         served_requests = random_selected_VpAndQ_pairs[:next_release_frequency]
-        print(f"served_requests: {served_requests}")
+        # print(f"served_requests: {served_requests}")
 
         # Delete by request_id
         served_ids = {req_id for (req_id, _, _) in served_requests}
@@ -663,7 +662,7 @@ def main(fraction, network_file_name, error_cutoff, overlap):
 
     # diameter_of_G = nx.diameter(G_example, weight='weight')
     print("Diameter of G_example:", diameter_of_G)
-    print("Diameter of MST:", diameter_of_mst_g)
+    print("Diameter of MST_G =", diameter_of_mst_g)
 
     # while True:
     S_example, Vp, owner = choose_steiner_set(G_example, fraction, diameter_of_G, myNodeCount)
@@ -789,7 +788,7 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     # see_graph(T_new)
     diameter_of_T = nx.diameter(T, weight='weight')
     # diameter_of_T_new = nx.diameter(T_new, weight='weight')
-    print("Diameter of T:", diameter_of_T)
+    print("Diameter of final tree T = ", diameter_of_T)
     # print("Diameter of T_new:", diameter_of_T_new)
         
     # verifying the edge weights by printing them
@@ -811,13 +810,13 @@ def main(fraction, network_file_name, error_cutoff, overlap):
 
     # see_graph(T)
     overlap = int(overlap)
-    Q = calculate_stretch(G_example, Q_main, T, mst_g, random_Vp1, len(random_Vp1), owner, error_cutoff, overlap, myNodeCount, diameter_of_G)
+    calculate_stretch(G_example, Q_final, T, mst_g, owner, myNodeCount)
     # print("Size of Q:", len(Q))
 
     # diameter_of_T = nx.diameter(T, weight='weight')
     # diameter_of_T_new = nx.diameter(T_new, weight='weight')
 
-    total_max_error,  total_min_error = calculate_error(Q, Vp, G_example, diameter_of_G, diameter_of_T)
+    total_max_error,  total_min_error = calculate_error(Q_main, Vp_main, G_example, diameter_of_G, diameter_of_T)
 
     return total_max_error,  total_min_error
 

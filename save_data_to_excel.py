@@ -2,35 +2,37 @@ import pandas as pd
 import os
 import re
 
-def save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, stretches_new, diameters_modified_mst, diameters_steiner_tree, file_name, reps, error_cutoff):
+def save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, diameters_T, diameters_mst, diameters_steiner_tree, file_name, reps, error_cutoff):
     """
     Save both raw and summary statistics of error and stretch data to an Excel file.
     """
-    n_groups = len(fractions)
+    # n_groups = len(fractions)
+    n_groups = 1
     # Group raw data by fraction
     groups_max_error = [max_errors[i::n_groups] for i in range(n_groups)]
     groups_min_error = [min_errors[i::n_groups] for i in range(n_groups)]
     groups_stretch = [stretches[i::n_groups] for i in range(n_groups)]
     groups_stretch_arrow = [stretches_arrow[i::n_groups] for i in range(n_groups)]
-    groups_stretch_new = [stretches_new[i::n_groups] for i in range(n_groups)]
-    groups_diameter_modified_mst = [diameters_modified_mst[i::n_groups] for i in range(n_groups)]
+    groups_diameter_T = [diameters_T[i::n_groups] for i in range(n_groups)]
+    groups_diameter_mst = [diameters_mst[i::n_groups] for i in range(n_groups)]
     groups_diameter_steiner_tree = [diameters_steiner_tree[i::n_groups] for i in range(n_groups)]
 
     # Prepare raw records
     total_nodes = int(re.findall(r'\d+\.?\d*', file_name)[0])
     raw_records = []
-    for frac, max_err_list, min_err_list, str_list, str_arrow_list, str_new_list, diam_modified_mst_list, diam_steiner_tree_list in zip(fractions, groups_max_error, groups_min_error, groups_stretch, groups_stretch_arrow, groups_stretch_new, groups_diameter_modified_mst, groups_diameter_steiner_tree):
+    # for frac, max_err_list, min_err_list, str_list, str_arrow_list, diam_steiner_tree_list in zip(fractions, groups_max_error, groups_min_error, groups_stretch, groups_stretch_arrow, groups_diameter_steiner_tree):
+    for max_err_list, min_err_list, str_list, str_arrow_list, diam_T_list, diam_mst_list, diam_steiner_tree_list in zip(groups_max_error, groups_min_error, groups_stretch, groups_stretch_arrow, groups_diameter_T, groups_diameter_mst, groups_diameter_steiner_tree):
         num_nodes = int(total_nodes)
-        for max_err, min_err, strc, str_arrow_c, str_new_c, diam_mod_c, diam_stei_c  in zip(max_err_list, min_err_list, str_list, str_arrow_list, str_new_list, diam_modified_mst_list, diam_steiner_tree_list):
+        for max_err, min_err, strc, str_arrow_c, diam_T_c, diam_mst_c, diam_stei_c  in zip(max_err_list, min_err_list, str_list, str_arrow_list, diam_T_list, diam_mst_list, diam_steiner_tree_list):
             raw_records.append({
-                'fraction': frac,
+                'fraction': fractions,
                 'num_nodes': num_nodes,
                 'max_error': max_err,
                 'min_error': min_err,
                 'stretch': strc,
                 'stretch_arrow': str_arrow_c,
-                'stretch_new': str_new_c,
-                'diameter_modified_mst': diam_mod_c,
+                'diameter_T': diam_T_c,
+                'diameter_mst': diam_mst_c,
                 'diameter_steiner_tree': diam_stei_c,
                 'reps': reps,
                 'error_cutoff': error_cutoff,
@@ -40,10 +42,10 @@ def save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, st
 
     # Compute summary statistics
     summary_records = []
-    for frac, max_err_list, min_err_list, str_list, str_arrow_list in zip(fractions, groups_max_error, groups_max_error, groups_stretch, groups_stretch_arrow):
-        num_nodes = int(frac * total_nodes)
+    for max_err_list, min_err_list, str_list, str_arrow_list in zip(groups_max_error, groups_max_error, groups_stretch, groups_stretch_arrow):
+        num_nodes = fractions
         summary_records.append({
-            'fraction': frac,
+            'fraction': fractions,
             'num_nodes': num_nodes,
             'mean_of_max_error': sum(max_err_list) / len(max_err_list),
             'min_of_max_error': min(max_err_list),
@@ -64,7 +66,7 @@ def save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, st
     summary_df = pd.DataFrame(summary_records)
 
     # Ensure output directory exists
-    folder = "results/threshEqualsDiamOver3_data/random"
+    folder = "./results/first_data/"
     os.makedirs(folder, exist_ok=True)
     excel_path = os.path.join(folder, f"{os.path.splitext(file_name)[0]}.xlsx")
 
