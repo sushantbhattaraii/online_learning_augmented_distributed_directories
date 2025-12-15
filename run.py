@@ -392,7 +392,7 @@ def sample_Q_within_diameter_with_overlap(G, Vp, error_cutoff, overlap, fraction
 
 
 # def calculate_stretch(G_example, T, T_new, mst_g, Vp, fraction, owner, error_cutoff, overlap, myNodeCount, diameter_of_G):
-def calculate_stretch(G_example, T, mst_g, Vp, fraction, owner, error_cutoff, overlap, myNodeCount, diameter_of_G):
+def calculate_stretch(G_example, Q, T, mst_g, Vp, fraction, owner, error_cutoff, overlap, myNodeCount, diameter_of_G):
     # V is the set of all vertices in the graph G.
     # print("type of vp is", type(Vp))
     V = list(range(myNodeCount))
@@ -405,7 +405,7 @@ def calculate_stretch(G_example, T, mst_g, Vp, fraction, owner, error_cutoff, ov
 
     # Q = sample_Q_within_diameter_with_overlap(G_example, Vp, error_cutoff, overlap, fraction, diameter_of_G)
 
-    print("Selected Q = ", Q)
+    # print("Selected Q = ", Q)
 
     print("Total number of vertices (n): ", len(V))
     # print("Total vertices (V):", V)
@@ -571,6 +571,67 @@ def make_G_sub(G_example, removed_vertices_for_subgraph):
 
     return H, removed_in_order
 
+
+def serve_requests_remove_by_id(VpAndQ):
+    """
+    Same procedure as before, but deletion is done by request_id.
+    This is safe even if you have duplicate triples.
+    """
+    rng = random.Random()
+    remaining = list(VpAndQ)  # work on a copy
+    batches = []
+
+    while remaining:
+        n = len(remaining)
+        num_to_extract = rng.randint(1, max(1, n // 2))
+        print(f"num_to_extract: {num_to_extract}")
+
+        # 2. Create a working copy of the pool so we can remove items as we pick them
+        pool = list(remaining)
+        random_selected_VpAndQ_pairs = []
+        print(f"Attempting to extract {num_to_extract} pairs...")
+
+        # --- Selection Logic ---
+        for _ in range(num_to_extract):
+            if not random_selected_VpAndQ_pairs:
+                # First selection: All items in pool are valid candidates
+                candidates = pool
+            else:
+                # Subsequent selections: Filter candidates
+                # Rule: candidate's Vp must not equal the last selected Vp
+                last_vp = random_selected_VpAndQ_pairs[-1][0]
+                candidates = [pair for pair in pool if pair[0] != last_vp]
+
+            # Safety Check: If we run out of valid candidates (corner case)
+            if not candidates:
+                print("Warning: Ran out of valid non-consecutive options early.")
+                break
+
+            # 3. Pick a random valid candidate
+            choice = random.choice(candidates)
+            
+            # 4. Add to result and remove from the available pool
+            random_selected_VpAndQ_pairs.append(choice)
+            pool.remove(choice)
+
+        print("Randomly selected Vp1 and Q1 pairs:", random_selected_VpAndQ_pairs)
+
+        # Another random number in [1, max(1, len(random_selected_VpAndQ_pairs))]
+        next_release_frequency = rng.randint(1, max(1, len(random_selected_VpAndQ_pairs) // 2))
+        print(f"next_release_frequency: {next_release_frequency}")
+
+        # Serve first next_release_frequency from subset
+        served_requests = random_selected_VpAndQ_pairs[:next_release_frequency]
+        print(f"served_requests: {served_requests}")
+
+        # Delete by request_id
+        served_ids = {req_id for (req_id, _, _) in served_requests}
+        remaining = [t for t in remaining if t[0] not in served_ids]
+
+        batches.append(served_requests)
+
+    return batches
+
 def main(fraction, network_file_name, error_cutoff, overlap):
 
     G_example = load_graph(network_file_name)
@@ -659,15 +720,28 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     random_Vp1 = [pair[1] for pair in random_selected_VpAndQ_pairs]
     print("Randomly selected Vp1:", random_Vp1)
 
-    insert_position = random.randint(0, len(random_Vp1))
-    random_Vp1.insert(insert_position, owner)
+    rng = random.Random()
+    first_release_frequency = rng.randint(1, max(1, len(random_selected_VpAndQ_pairs) // 2))
+    print(f"first_release_frequency: {first_release_frequency}")
+    first_served_requests = random_selected_VpAndQ_pairs[:first_release_frequency]
+
+    first_Q = [pair[2] for pair in first_served_requests]
+    print("First served Q:", first_Q)
+
+    # VpAndQ = VpAndQ - first_served_requests
+    VpAndQ = [t for t in VpAndQ if t not in first_served_requests]
+    print("Remaining VpAndQ pairs after first release:", VpAndQ)
 
     Vp1_union_owner = random_Vp1
+
+    insert_position = random.randint(0, len(Vp1_union_owner))
+    Vp1_union_owner.insert(insert_position, owner)
 
     print("Vp1 _ union _ owner:", Vp1_union_owner)
 
     Vp1_union_owner = set(Vp1_union_owner)
     print("Vp1 _ union _ owner set:", Vp1_union_owner)
+
 
     # Select S_example, Vp, owner such that only when diameter of G_sub <= diameter of G/4
     # removed_vertices_for_subgraph = set(G_example.nodes()) - set(S_example)
@@ -715,7 +789,7 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     # see_graph(T_new)
     diameter_of_T = nx.diameter(T, weight='weight')
     # diameter_of_T_new = nx.diameter(T_new, weight='weight')
-    print("Diameter of T here:", diameter_of_T)
+    print("Diameter of T:", diameter_of_T)
     # print("Diameter of T_new:", diameter_of_T_new)
         
     # verifying the edge weights by printing them
@@ -723,14 +797,21 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     #     print(f"Edge ({u}, {v}) has weight: {weight}")
 
 
-    exit(0)
 
+    # Serving logic here
+    batches = serve_requests_remove_by_id(VpAndQ)
+    # for i, batch in enumerate(batches, 1):
+    #     print(f"Iteration {i}: served_requests = {batch}")
+    Q_actual = [t[2] for batch in batches for t in batch]
+    print("Q_actual:", Q_actual)
 
+    Q_final = first_Q + Q_actual
+    print("Q_final:", Q_final)
 
 
     # see_graph(T)
     overlap = int(overlap)
-    Q = calculate_stretch(G_example, T, mst_g, random_Vp1, len(random_Vp1), owner, error_cutoff, overlap, myNodeCount, diameter_of_G)
+    Q = calculate_stretch(G_example, Q_main, T, mst_g, random_Vp1, len(random_Vp1), owner, error_cutoff, overlap, myNodeCount, diameter_of_G)
     # print("Size of Q:", len(Q))
 
     # diameter_of_T = nx.diameter(T, weight='weight')
