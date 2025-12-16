@@ -49,8 +49,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
 
     fractions = sorted(fractions)
 
-    print("Fractions to be used here: ", fractions)
-    exit()
+    # print("Fractions to be used here: ", fractions)
 
     for rep in range(repetitions):
         # The four fraction values
