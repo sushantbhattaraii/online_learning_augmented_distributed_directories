@@ -9,7 +9,7 @@ import os
 
 # Gather and sort all Excel files
 
-files = sorted(glob.glob('./results/first_secondary_data/512nodes_diameter4_cutoff2*.xlsx'))
+files = sorted(glob.glob('./results/diamOver2withRelease_data/1024nodes_diameter4_cutoff2.0*.xlsx'))
 
 # Extract node count and overlap from filename
 m = re.search(r'(\d+)nodes_', files[0])
@@ -127,7 +127,7 @@ ax3.set_xticks(unique_x)
 # Save or display
 plt.tight_layout()
 plt.ylim(0, 5)
-folder = "./results/first_secondary_plots/"
+folder = "./results/diamOver2withRelease_plots/"
 
 os.makedirs(folder, exist_ok=True)
 # filename = f'{node_count}_nodes.png'
