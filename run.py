@@ -418,7 +418,7 @@ def calculate_stretch(G_example, Q, T, mst_g, owner, myNodeCount):
     # print("Center(s) of the tree:", centers)
 
     root = centers[0]
-    print("Root node of the final tree T:", root)
+    # print("Root node of the final tree T:", root)
 
     parent = build_parent_dict(T, root)
     parent_arrow = build_parent_dict_arrow(mst_g, root)
@@ -588,7 +588,7 @@ def serve_requests_remove_by_id(VpAndQ):
         # 2. Create a working copy of the pool so we can remove items as we pick them
         pool = list(remaining)
         random_selected_VpAndQ_pairs = []
-        print(f"Attempting to extract {num_to_extract} pairs...")
+        # print(f"Attempting to extract {num_to_extract} pairs...")
 
         # --- Selection Logic ---
         for _ in range(num_to_extract):
@@ -613,7 +613,7 @@ def serve_requests_remove_by_id(VpAndQ):
             random_selected_VpAndQ_pairs.append(choice)
             pool.remove(choice)
 
-        print("Randomly selected Vp1 and Q1 pairs:", random_selected_VpAndQ_pairs)
+        # print("Randomly selected Vp1 and Q1 pairs:", random_selected_VpAndQ_pairs)
 
         # Another random number in [1, max(1, len(random_selected_VpAndQ_pairs))]
         next_release_frequency = rng.randint(1, max(1, len(random_selected_VpAndQ_pairs) // 2))
@@ -669,18 +669,18 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     # while True:
     S_example, Vp, owner = choose_steiner_set(G_example, fraction, diameter_of_G, myNodeCount)
     # print("Randomly chosen Predicted Vertices (Vp):", Vp)
-    print("Steiner set S:", S_example)
+    # print("Steiner set S:", S_example)
 
     Vp_main = Vp
     Q_main = sample_Q_within_diameter_with_overlap(G_example, Vp, error_cutoff, overlap, fraction, diameter_of_G)
-    print("The main Vp:", Vp_main)
-    print("The main Q:", Q_main)
-    print("Owner node:", owner)
+    # print("The main Vp:", Vp_main)
+    # print("The main Q:", Q_main)
+    # print("Owner node:", owner)
 
     VpAndQ = list(zip(Vp_main, Q_main))
     VpAndQ = [(i, vp, q) for i, (vp, q) in enumerate(VpAndQ, start=1)]
-    print("Vp and Q pairs:", VpAndQ)
-    print("Length of Vp and Q pairs:", len(VpAndQ))
+    # print("Vp and Q pairs:", VpAndQ)
+    # print("Length of Vp and Q pairs:", len(VpAndQ))
     
     # --- Configuration to extract random VpAndQ pairs---
     # 1. Determine how many to extract (between 1 and half length)
@@ -691,7 +691,7 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     pool = list(VpAndQ)
     random_selected_VpAndQ_pairs = []
 
-    print(f"Attempting to extract {num_to_extract} pairs...")
+    # print(f"Attempting to extract {num_to_extract} pairs...")
 
     # --- Selection Logic ---
     for _ in range(num_to_extract):
@@ -716,32 +716,32 @@ def main(fraction, network_file_name, error_cutoff, overlap):
         random_selected_VpAndQ_pairs.append(choice)
         pool.remove(choice)
 
-    print("Randomly selected Vp1 and Q1 pairs:", random_selected_VpAndQ_pairs)
+    # print("Randomly selected Vp1 and Q1 pairs:", random_selected_VpAndQ_pairs)
 
     random_Vp1 = [pair[1] for pair in random_selected_VpAndQ_pairs]
-    print("Randomly selected Vp1:", random_Vp1)
+    # print("Randomly selected Vp1:", random_Vp1)
 
     rng = random.Random()
     first_release_frequency = rng.randint(1, max(1, len(random_selected_VpAndQ_pairs) // 2))
-    print(f"first_release_frequency: {first_release_frequency}")
+    # print(f"first_release_frequency: {first_release_frequency}")
     first_served_requests = random_selected_VpAndQ_pairs[:first_release_frequency]
 
     first_Q = [pair[2] for pair in first_served_requests]
-    print("First served Q:", first_Q)
+    # print("First served Q:", first_Q)
 
     # VpAndQ = VpAndQ - first_served_requests
     VpAndQ = [t for t in VpAndQ if t not in first_served_requests]
-    print("Remaining VpAndQ pairs after first release:", VpAndQ)
+    # print("Remaining VpAndQ pairs after first release:", VpAndQ)
 
     Vp1_union_owner = random_Vp1
 
     insert_position = random.randint(0, len(Vp1_union_owner))
     Vp1_union_owner.insert(insert_position, owner)
 
-    print("Vp1 _ union _ owner:", Vp1_union_owner)
+    # print("Vp1 _ union _ owner:", Vp1_union_owner)
 
     Vp1_union_owner = set(Vp1_union_owner)
-    print("Vp1 _ union _ owner set:", Vp1_union_owner)
+    # print("Vp1 _ union _ owner set:", Vp1_union_owner)
 
 
     # Select S_example, Vp, owner such that only when diameter of G_sub <= diameter of G/4
@@ -808,10 +808,10 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     # for i, batch in enumerate(batches, 1):
     #     print(f"Iteration {i}: served_requests = {batch}")
     Q_actual = [t[2] for batch in batches for t in batch]
-    print("Q_actual:", Q_actual)
+    # print("Q_actual:", Q_actual)
 
     Q_final = first_Q + Q_actual
-    print("Q_final:", Q_final)
+    # print("Q_final:", Q_final)
 
 
     # see_graph(T)

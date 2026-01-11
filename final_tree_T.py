@@ -450,7 +450,7 @@ def choose_steiner_set(G, fraction, diameter_of_G, myNodeCount):
     # remaining = set(nodes) - set(reduced_Vp)
     owner = random.choice(list(nodes))
 
-    print ("Owner node:", owner)
+    # print ("Owner node:", owner)
     # print("Type of owner:", type(owner))
 
     # print("Again (original_Vp):", original_Vp, " and its length: ", len(original_Vp))
