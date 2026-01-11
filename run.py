@@ -646,6 +646,8 @@ def main(fraction, network_file_name, error_cutoff, overlap):
             break
 
     mst_g = load_mst(mst_filename)
+    mst_weight = sum(mst_g[u][v].get("weight", 1) for u, v in mst_g.edges())
+    print("Weight of the MST:", mst_weight)
 
     match = re.search(r'diameter(\d+)', mst_filename)
     if match:
@@ -755,6 +757,8 @@ def main(fraction, network_file_name, error_cutoff, overlap):
         #     break
     
     T_H = steiner_tree(G_example, Vp1_union_owner)
+    ST_weight = sum(T_H[u][v].get("weight", 1) for u, v in T_H.edges())
+    print("Weight of the Steiner tree T_H:", ST_weight)
     # see_graph(T_H)
 
     # modified_mst, actually_removed = modify_the_mst_g(mst_g, G_example, S_example)
@@ -781,6 +785,8 @@ def main(fraction, network_file_name, error_cutoff, overlap):
     # Compute Final tree T
     # T = augment_steiner_tree_with_remaining_vertices(G_example, T_H, myNodeCount)
     T = construct_augmented_spanning_tree(G_example, Vp1_union_owner, T_H)
+    T_weight = sum(T[u][v].get("weight", 1) for u, v in T.edges())
+    print("Weight of the Final tree T:", T_weight)
     # see_graph(T)
     # T = augment_tree_with_remaining_nodes(G_example, T_H, weight="weight")
     # see_graph(T)

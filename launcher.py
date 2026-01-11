@@ -28,6 +28,9 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     diameters_T = []
     diameters_mst = []
     diameters_steiner_tree = []
+    weights_mst = []
+    weights_T = []
+    weights_ST = []
         
     nodes_count = [] 
 
@@ -35,13 +38,13 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     # print("Total nodes in the graph: ", nodes_num)
     # print("Type of n: ", type(nodes_num))
         
-    # fractions = []
+    fractions = [16, 32, 64, 128, 256]
     # while nodes_num > 1:
     #     nodes_num //=2
     #     fractions.append(nodes_num)
 
     # fractions = fractions[::-1]
-    fractions = make_fractions(nodes_num, mode="random")
+    # fractions = make_fractions(nodes_num, mode="random")
     # for i in range(0, 5):
     #         fractions[i] = random.randint(1, int(nodes_num))
     #         if fractions[i] > (nodes_num / (2**(i+1))) and fractions[i] <= (nodes_num / (2**(i))):
@@ -50,6 +53,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     fractions = sorted(fractions)
 
     # print("Fractions to be used here: ", fractions)
+    # exit()
 
     for rep in range(repetitions):
         # The four fraction values
@@ -90,6 +94,19 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
             r"Diameter of Steiner tree =\s*([0-9.+\-eE]+)"
         )
 
+        pattern9 = re.compile(
+            r"Weight of the MST:\s*([0-9.+\-eE]+)"
+        )
+
+        pattern10 = re.compile(
+            r"Weight of the Final tree T:\s*([0-9.+\-eE]+)"
+        )
+
+        pattern11 = re.compile(
+            r"Weight of the Steiner tree T_H:\s*([0-9.+\-eE]+)"
+        )
+
+
         for frac in fractions:
             print(f"\n=== Running run.py with --operations {frac}  and Iteration {rep} ===")
             proc = subprocess.Popen(
@@ -113,6 +130,9 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
                 m6 = pattern6.search(line)
                 m7 = pattern7.search(line)
                 m8 = pattern8.search(line)
+                m9 = pattern9.search(line)
+                m10 = pattern10.search(line)
+                m11 = pattern11.search(line)
                 if m:
                     max_error_value = float(m.group(1))
                 if m2:
@@ -129,6 +149,12 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
                     diameter_of_mst = int(m6.group(1))
                 if m7:
                     diameter_of_steiner_tree = int(m7.group(1))
+                if m9:
+                    weight_of_mst = float(m9.group(1))
+                if m10:
+                    weight_of_T = float(m10.group(1))
+                if m11:
+                    weight_of_ST = float(m11.group(1))
             
             proc.wait()
             if proc.returncode != 0:
@@ -142,6 +168,9 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
             diameters_mst.append(diameter_of_mst)
             diameters_steiner_tree.append(diameter_of_steiner_tree)
             nodes_count.append(num_nodes)
+            weights_mst.append(weight_of_mst)
+            weights_T.append(weight_of_T)
+            weights_ST.append(weight_of_ST)
 
 
     # Searching for the diameter of the graph from its filename
@@ -157,7 +186,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     filename = str(nodes_count[0])+"nodes_diameter"+str(diameter_value)+"_cutoff"+str(error_cutoff)+"-repetitions"+str(repetitions)+ "-overlap"+str(overlap)+".png"
 
     # plot_error_and_stretch_graph_with_boxplot(fractions, errors, filename, repetitions, stretches, error_cutoff, overlap)
-    save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, diameters_T, diameters_mst, diameters_steiner_tree, filename, repetitions, error_cutoff)
+    save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, diameters_T, diameters_mst, diameters_steiner_tree, weights_mst, weights_T, weights_ST, filename, repetitions, error_cutoff)
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Running the experiment with different fractions of predicted nodes and with different graphs... ")

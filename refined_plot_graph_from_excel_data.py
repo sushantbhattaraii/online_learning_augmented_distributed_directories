@@ -9,7 +9,7 @@ import os
 
 # Gather and sort all Excel files
 
-files = sorted(glob.glob('./results/diamOver2withRelease_data/1024nodes_diameter4_cutoff2.0*.xlsx'))
+files = sorted(glob.glob('./results/data_for_paper/1024nodes_diameter4_cutoff2.0*.xlsx'))
 
 # Extract node count and overlap from filename
 m = re.search(r'(\d+)nodes_', files[0])
@@ -134,5 +134,5 @@ os.makedirs(folder, exist_ok=True)
 filename = f'{node_count}_nodes_cutoff_{actual_cutoff}.png'
 path_to_save = os.path.join(folder, filename)
 
-plt.savefig(path_to_save)
-# plt.show()
+# plt.savefig(path_to_save)
+plt.show()
