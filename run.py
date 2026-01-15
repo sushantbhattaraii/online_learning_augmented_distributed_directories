@@ -16,7 +16,7 @@ from augment_rem_nodes_with_existing_tree import augment_tree_with_remaining_nod
 
 
 request_queue = defaultdict(deque)
-global link_, linkArrow_, linkNew_
+global link_, linkArrow_, linkNew_, linkPArrow_
 link_ = None
 linkArrow_ = None
 linkPArrow_ = None
@@ -146,7 +146,7 @@ def publish_arrow(mst_g, o, root, parent_arrow, linkArrow_):
     # By the pseudocode, we do NOT set link(root) in the final step.
 
 
-def publish_parrow(T_parrow, o, root, parent_arrow, linkArrow_):
+def publish_parrow(T_parrow, o, root, parent_arrow, linkPArrow_):
     """
     Implements Algorithm 1 (Publish) from your snippet.
     
