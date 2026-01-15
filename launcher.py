@@ -38,7 +38,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     # print("Total nodes in the graph: ", nodes_num)
     # print("Type of n: ", type(nodes_num))
         
-    fractions = [16, 32, 64, 128, 256]
+    fractions = [256]
     # while nodes_num > 1:
     #     nodes_num //=2
     #     fractions.append(nodes_num)
