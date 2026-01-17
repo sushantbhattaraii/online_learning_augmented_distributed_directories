@@ -6,19 +6,19 @@ file_inf = "512nodes_diameter4_cutoffinf-repetitions50-overlap100.xlsx"
 file_2_0 = "512nodes_diameter4_cutoff2.0-repetitions50-overlap100.xlsx"
 
 # Load the datasets
-df_inf = pd.read_excel(f"./../results/data_for_paper/first/{file_inf}")
-df_2_0 = pd.read_excel(f"./../results/data_for_paper/first/{file_2_0}")
+df_inf = pd.read_excel(f"./../results/data_for_paper2/first/{file_inf}")
+df_2_0 = pd.read_excel(f"./../results/data_for_paper2/first/{file_2_0}")
 
 # Group by fraction and calculate the mean for both metrics
-summary_inf = df_inf.groupby('fraction')[['stretch', 'stretch_arrow']].mean().reset_index()
-summary_2_0 = df_2_0.groupby('fraction')[['stretch', 'stretch_arrow']].mean().reset_index()
+summary_inf = df_inf.groupby('fraction')[['stretch', 'stretch_arrow', 'stretch_parrow']].mean().reset_index()
+summary_2_0 = df_2_0.groupby('fraction')[['stretch', 'stretch_arrow', 'stretch_parrow']].mean().reset_index()
 
 # Combine data for plotting
 combined = summary_inf.merge(summary_2_0, on='fraction', suffixes=('_inf', '_2.0'))
 cmap = plt.get_cmap('tab20')
 
 # Create the plot
-plt.figure(figsize=(640/100, 480/100), dpi=100)
+plt.figure(figsize=(7, 5), dpi=180)
 plt.xticks(fontsize=9)
 
 
@@ -28,10 +28,11 @@ fractions = combined['fraction']
 
 plt.plot([str(x) for x in fractions], combined['stretch_2.0'], marker='.', linestyle='-', label=f'Stretch$_{'O'}$$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.5)', color=cmap(0), linewidth=1)
 plt.plot([str(x) for x in fractions], combined['stretch_arrow_2.0'], marker='v', linestyle='-.', label=f'Stretch$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.5)', color=cmap(1), linewidth=1)
+plt.plot([str(x) for x in fractions], combined['stretch_parrow_2.0'], marker='^', linestyle=':', label=f'Stretch$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.5)', color=cmap(2), linewidth=1)
 
-plt.plot([str(x) for x in fractions], combined['stretch_inf'], marker='.', linestyle='-', label=f'Stretch$_{'O'}$$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.0)', color=cmap(2), linewidth=1)
-plt.plot([str(x) for x in fractions], combined['stretch_arrow_inf'], marker='v', linestyle='-.', label=f'Stretch$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.0)', color=cmap(3), linewidth=1)
-
+plt.plot([str(x) for x in fractions], combined['stretch_inf'], marker='.', linestyle='-', label=f'Stretch$_{'O'}$$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.0)', color=cmap(3), linewidth=1)
+plt.plot([str(x) for x in fractions], combined['stretch_arrow_inf'], marker='v', linestyle='-.', label=f'Stretch$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.0)', color=cmap(4), linewidth=1)
+plt.plot([str(x) for x in fractions], combined['stretch_parrow_inf'], marker='^', linestyle=':', label=f'Stretch$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(${'err'}$ ≤ 0.0)', color=cmap(5), linewidth=1)
 
 # Formatting the chart
 plt.xlabel('Number of Operations', fontsize=12)
