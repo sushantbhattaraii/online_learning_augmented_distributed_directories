@@ -498,7 +498,7 @@ def calculate_stretch(G_example, Q, T, T_parrow, mst_g, owner, myNodeCount):
     # print("Root node of the final tree T:", root)
 
     parent = build_parent_dict(T, root)
-    parent_parrow = build_parent_dict_parrow(T_parrow, root_parrow)
+    parent_parrow = build_parent_dict_parrow(T_parrow, root)
     parent_arrow = build_parent_dict_arrow(mst_g, root)
     # parent_new = build_parent_dict_arrow(T_new, root)
 
