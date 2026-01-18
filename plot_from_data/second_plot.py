@@ -10,8 +10,10 @@ results = {
     'Category': categories,
     'mean_stretch_256': [],
     'mean_stretch_arrow_256': [],
+    'mean_stretch_parrow_256': [],
     'mean_stretch_1024': [],
-    'mean_stretch_arrow_1024': []
+    'mean_stretch_arrow_1024': [],
+    'mean_stretch_parrow_1024': [],
 }
 cmap = plt.get_cmap('tab20')
 
@@ -23,31 +25,39 @@ for cutoff in cutoffs:
     
     # Load and aggregate data for 256 nodes
     # df_256 = pd.read_excel(file_256)
-    df_256 = pd.read_excel(f"./../results/data_for_paper/second/{file_256}")
+    df_256 = pd.read_excel(f"./../results/data_for_paper3/second/{file_256}")
     results['mean_stretch_256'].append(df_256['stretch'].mean())
     results['mean_stretch_arrow_256'].append(df_256['stretch_arrow'].mean())
+    results['mean_stretch_parrow_256'].append(df_256['stretch_parrow'].mean())
     
     # Load and aggregate data for 1024 nodes
-    df_1024 = pd.read_excel(f"./../results/data_for_paper/second/{file_1024}")
+    df_1024 = pd.read_excel(f"./../results/data_for_paper3/second/{file_1024}")
     results['mean_stretch_1024'].append(df_1024['stretch'].mean())
     results['mean_stretch_arrow_1024'].append(df_1024['stretch_arrow'].mean())
+    results['mean_stretch_parrow_1024'].append(df_1024['stretch_parrow'].mean())
 
 # Create the plot
-plt.figure(figsize=(640/100, 480/100), dpi=100)
+plt.figure(figsize=(7, 5), dpi=180)
 plt.xticks(fontsize=9)
 
 # Plotting the 4 lines
-plt.plot([str(x) for x in categories], results['mean_stretch_1024'], marker='.', linestyle='-', label=f'Stretch$_{'O'}$$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(n = 1024)', color=cmap(0), linewidth=1)
-plt.plot([str(x) for x in categories], results['mean_stretch_arrow_1024'], marker='v', linestyle='-.', label=f'Stretch$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(n = 1024)', color=cmap(1), linewidth=1)
-plt.plot([str(x) for x in categories], results['mean_stretch_256'], marker='.', linestyle='-', label=f'Stretch$_{'O'}$$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'}$ (n = 256)', color=cmap(2), linewidth=1)
-plt.plot([str(x) for x in categories], results['mean_stretch_arrow_256'], marker='v', linestyle='-.', label=f'Stretch$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(n = 256)', color=cmap(3), linewidth=1)
+plt.plot([str(x) for x in categories], results['mean_stretch_arrow_1024'], marker='v', linestyle='-.', label=f'Arrow', color=cmap(2), linewidth=1)
+plt.plot([str(x) for x in categories], results['mean_stretch_parrow_1024'], marker='^', linestyle=':', label=f'PArrow', color=cmap(4), linewidth=1)
+plt.plot([str(x) for x in categories], results['mean_stretch_1024'], marker='.', linestyle='-', label=f'OPArrow', color=cmap(0), linewidth=1)
+
+# plt.plot([str(x) for x in categories], results['mean_stretch_arrow_256'], marker='v', linestyle='-.', label=f'Arrow', color=cmap(2), linewidth=1)
+# plt.plot([str(x) for x in categories], results['mean_stretch_parrow_256'], marker='^', linestyle=':', label=f'PArrow', color=cmap(4), linewidth=1)
+# plt.plot([str(x) for x in categories], results['mean_stretch_256'], marker='.', linestyle='-', label=f'OPArrow', color=cmap(0), linewidth=1)
+
+# plt.plot([str(x) for x in categories], results['mean_stretch_256'], marker='.', linestyle='-', label=f'Stretch$_{'O'}$$_{'P'}$$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'}$ (n = 256)', color=cmap(2), linewidth=1)
+# plt.plot([str(x) for x in categories], results['mean_stretch_arrow_256'], marker='v', linestyle='-.', label=f'Stretch$_{'A'}$$_{'r'}$$_{'r'}$$_{'o'}$$_{'w'} $(n = 256)', color=cmap(3), linewidth=1)
 
 
 # Labels and Formatting
 plt.xlabel('Maximum Error Bound', fontsize=12)
-plt.ylabel('Mean Stretch', fontsize=12)
-plt.title('Maximum Error Bound vs Mean Stretch for $\# opr = 256$', fontsize=12)
-plt.legend(loc='best')
+plt.ylabel('Stretch', fontsize=12)
+# plt.title('Maximum Error Bound vs Mean Stretch for $\# opr = 256$', fontsize=12)
+plt.legend(loc='lower right')
 # plt.grid(True, linestyle='--', alpha=0.7)
 plt.xticks([str(x) for x in categories])
 plt.tight_layout()
