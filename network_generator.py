@@ -18,18 +18,18 @@ from networkx.readwrite import json_graph
 # k = 20
 # num_nodes = 128
 # k = 17
-num_nodes = 1024
+num_nodes = 128
 # k = 15
 
 watts_strogatz_prob = 0.03
 
-erdos_renyi_prob = 0.5
+erdos_renyi_prob = 0.1
 internet_graph_seed = None  # optional
 
 
 def add_edge_weights(graph):
     for e in graph.edges:
-        w = randint(1, 20)
+        w = randint(10, 20)
         graph.add_edge(e[0], e[1], weight=w)
 
 
@@ -51,7 +51,7 @@ def write_to_a_file(graph, param):
     diameter = nx.diameter(graph, weight='weight')
     print("Diameter of the graph yoo:", diameter)
     # exit()
-    graph_name = './graphs_new/' + str(num_nodes) + str(param) + '_diameter' + str(diameter) + 'test.edgelist'
+    graph_name = './graphs_new_new/' + str(num_nodes) + str(param) + '_diameter' + str(diameter) + 'test.edgelist'
     nx.write_graphml(graph, graph_name)
     return graph_name
 
