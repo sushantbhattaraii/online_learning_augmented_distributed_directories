@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Define categories and the corresponding cutoff strings found in filenames
-categories = ['$\leq 0.0$', '$\leq 0.1$', '$\leq 0.2$', '$\leq 0.3$', '$\leq 0.4$', '$\leq 0.5$']
+categories = ['$ 0.0$', '$ 0.1$', '$ 0.2$', '$ 0.3$', '$ 0.4$', '$ 0.5$']
 cutoffs = ['inf', '10.0', '5.0', '3.3333333333333335', '2.5', '2.0']
 
 # Data structures to store results for 4 line graphs
@@ -20,18 +20,18 @@ cmap = plt.get_cmap('tab20')
 # Process files for each category
 for cutoff in cutoffs:
     # Construct filenames for 256 and 1024 nodes
-    file_256 = f"256nodes_diameter5_cutoff{cutoff}-repetitions50-overlap100.xlsx"
-    file_1024 = f"1024nodes_diameter4_cutoff{cutoff}-repetitions50-overlap100.xlsx"
+    file_256 = f"256nodes_diameter41_cutoff{cutoff}-repetitions50-overlap100.xlsx"
+    file_1024 = f"1024nodes_diameter33_cutoff{cutoff}-repetitions50-overlap100.xlsx"
     
     # Load and aggregate data for 256 nodes
-    # df_256 = pd.read_excel(file_256)
-    df_256 = pd.read_excel(f"./../results/data_for_paper3/second/{file_256}")
-    results['mean_stretch_256'].append(df_256['stretch'].mean())
-    results['mean_stretch_arrow_256'].append(df_256['stretch_arrow'].mean())
-    results['mean_stretch_parrow_256'].append(df_256['stretch_parrow'].mean())
+    # # df_256 = pd.read_excel(file_256)
+    # df_256 = pd.read_excel(f"./../results/data_for_paper3/second/{file_256}")
+    # results['mean_stretch_256'].append(df_256['stretch'].mean())
+    # results['mean_stretch_arrow_256'].append(df_256['stretch_arrow'].mean())
+    # results['mean_stretch_parrow_256'].append(df_256['stretch_parrow'].mean())
     
     # Load and aggregate data for 1024 nodes
-    df_1024 = pd.read_excel(f"./../results/data_for_paper3/second/{file_1024}")
+    df_1024 = pd.read_excel(f"./../results/data_for_paper5 - thresh16.0 - new graph/second/{file_1024}")
     results['mean_stretch_1024'].append(df_1024['stretch'].mean())
     results['mean_stretch_arrow_1024'].append(df_1024['stretch_arrow'].mean())
     results['mean_stretch_parrow_1024'].append(df_1024['stretch_parrow'].mean())
@@ -54,7 +54,7 @@ plt.plot([str(x) for x in categories], results['mean_stretch_1024'], marker='.',
 
 
 # Labels and Formatting
-plt.xlabel('Maximum Error Bound', fontsize=12)
+plt.xlabel('Error', fontsize=12)
 plt.ylabel('Stretch', fontsize=12)
 # plt.title('Maximum Error Bound vs Mean Stretch for $\# opr = 256$', fontsize=12)
 plt.legend(loc='lower right')
