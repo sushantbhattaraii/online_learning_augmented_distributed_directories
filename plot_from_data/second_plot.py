@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Define categories and the corresponding cutoff strings found in filenames
-categories = ['$ 0.0$', '$ 0.1$', '$ 0.2$', '$ 0.3$', '$ 0.4$', '$ 0.5$']
+categories = ['$0.0$', '$0.1$', '$0.2$', '$0.3$', '$0.4$', '$0.5$']
 cutoffs = ['inf', '10.0', '5.0', '3.3333333333333335', '2.5', '2.0']
 
 # Data structures to store results for 4 line graphs
@@ -31,19 +31,20 @@ for cutoff in cutoffs:
     # results['mean_stretch_parrow_256'].append(df_256['stretch_parrow'].mean())
     
     # Load and aggregate data for 1024 nodes
-    df_1024 = pd.read_excel(f"./../results/data_for_paper5 - thresh16.0 - new graph/second/{file_1024}")
+    df_1024 = pd.read_excel(f"./../results/data_for_paper5 - thresh2.0 - new graph/second/{file_1024}")
     results['mean_stretch_1024'].append(df_1024['stretch'].mean())
     results['mean_stretch_arrow_1024'].append(df_1024['stretch_arrow'].mean())
     results['mean_stretch_parrow_1024'].append(df_1024['stretch_parrow'].mean())
 
 # Create the plot
-plt.figure(figsize=(7, 5), dpi=180)
-plt.xticks(fontsize=9)
+plt.figure(figsize=(2.35, 2.35*5/7), dpi=300)
+plt.xticks(fontsize=8)
+plt.yticks(fontsize=8)
 
 # Plotting the 4 lines
-plt.plot([str(x) for x in categories], results['mean_stretch_arrow_1024'], marker='v', linestyle='-.', label=f'Arrow', color=cmap(2), linewidth=1)
-plt.plot([str(x) for x in categories], results['mean_stretch_parrow_1024'], marker='^', linestyle=':', label=f'PArrow', color=cmap(4), linewidth=1)
-plt.plot([str(x) for x in categories], results['mean_stretch_1024'], marker='.', linestyle='-', label=f'OPArrow', color=cmap(0), linewidth=1)
+plt.plot([str(x) for x in categories], results['mean_stretch_arrow_1024'], marker='v', linestyle='-.', label=f'Arrow', color=cmap(2), linewidth=1.1, markersize=4, zorder=2)
+plt.plot([str(x) for x in categories], results['mean_stretch_parrow_1024'], marker='^', linestyle=':', label=f'PArrow', color=cmap(4), linewidth=1.1, markersize=4, zorder=3)
+plt.plot([str(x) for x in categories], results['mean_stretch_1024'], marker='.', linestyle='-', label=f'OPArrow', color=cmap(0), linewidth=1.1, markersize=4, zorder=1)
 
 # plt.plot([str(x) for x in categories], results['mean_stretch_arrow_256'], marker='v', linestyle='-.', label=f'Arrow', color=cmap(2), linewidth=1)
 # plt.plot([str(x) for x in categories], results['mean_stretch_parrow_256'], marker='^', linestyle=':', label=f'PArrow', color=cmap(4), linewidth=1)
@@ -54,13 +55,20 @@ plt.plot([str(x) for x in categories], results['mean_stretch_1024'], marker='.',
 
 
 # Labels and Formatting
-plt.xlabel('Error', fontsize=12)
-plt.ylabel('Stretch', fontsize=12)
+plt.xlabel('Error', fontsize=9, labelpad=2)
+plt.ylabel('Stretch', fontsize=9, labelpad=2)
 # plt.title('Maximum Error Bound vs Mean Stretch for $\# opr = 256$', fontsize=12)
-plt.legend(loc='lower right')
+
+plt.legend(loc='center right', bbox_to_anchor=(1.0, 0.4), fontsize=8, frameon=True,
+                borderpad=0.25,
+                labelspacing=0.2,
+                handletextpad=0.4,
+                handlelength=2.2)
+
+
 # plt.grid(True, linestyle='--', alpha=0.7)
 plt.xticks([str(x) for x in categories])
-plt.tight_layout()
+plt.tight_layout(pad=0.05)
 
 # Save the plot
 # plt.savefig('stretch_metrics_by_error_bound.png')
