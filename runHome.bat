@@ -1,1 +1,0 @@
-python launcher.py -n 512random_diameter37test.edgelist -c inf -r 50
