@@ -7,6 +7,7 @@ import networkx as nx
 # import matplotlib.pyplot as plt
 import random
 from networkx.readwrite import json_graph
+from draw_graph import see_graph
 
 #  0 ≤ β ≤ 1 0\leq \beta \leq 1 and N ≫ K ≫ ln ⁡ N ≫ 1 {\displaystyle N\gg K\gg \ln N\gg 1}
 
@@ -18,8 +19,8 @@ from networkx.readwrite import json_graph
 # k = 20
 # num_nodes = 128
 # k = 17
-num_nodes = 128
-# k = 15
+num_nodes = 1024
+k = 15
 
 watts_strogatz_prob = 0.03
 
@@ -51,7 +52,7 @@ def write_to_a_file(graph, param):
     diameter = nx.diameter(graph, weight='weight')
     print("Diameter of the graph yoo:", diameter)
     # exit()
-    graph_name = './graphs_new_new/' + str(num_nodes) + str(param) + '_diameter' + str(diameter) + 'test.edgelist'
+    graph_name = './internet_graphs/' + str(num_nodes) + str(param) + '_diameter' + str(diameter) + 'test.edgelist'
     nx.write_graphml(graph, graph_name)
     return graph_name
 
@@ -97,6 +98,27 @@ def build_random_graph():
 
     return random_graph
 
+def build_internet_graph():
+    internet_graph = nx.random_internet_as_graph(num_nodes)
+    # create a random mapping old label -> new label
+    node_mapping = dict(zip(internet_graph.nodes(), sorted(internet_graph.nodes(), key=lambda k: random.random())))
+    internet_graph = nx.relabel_nodes(internet_graph, node_mapping)
+    add_edge_weights(internet_graph)
+
+    assert nx.is_connected(internet_graph)
+    return internet_graph
+
+def build_small_world_graph():
+
+    small_world_graph = nx.connected_watts_strogatz_graph(num_nodes, k, watts_strogatz_prob, tries=1000, seed=None)
+    # create a random mapping old label -> new label
+    node_mapping = dict(zip(small_world_graph.nodes(), sorted(small_world_graph.nodes(), key=lambda k: random.random())))
+    small_world_graph = nx.relabel_nodes(small_world_graph, node_mapping)
+    add_edge_weights(small_world_graph)
+
+    assert nx.is_connected(small_world_graph)
+    return small_world_graph
+
 
 def draw(graph):
     plt.axis('off')
@@ -132,12 +154,21 @@ def draw(graph):
 
 
 def build_graphs():
-    random_graph = build_random_graph()
-    graph_name = write_to_a_file(random_graph, "random")
-    # draw(random_graph)
-    # nx.draw(random_graph, with_labels=True)
-    # plt.show()
-    return graph_name
+
+    # # Random Graph Generation and Visualization
+    # random_graph = build_random_graph()
+    # see_graph(random_graph)
+    # write_to_a_file(random_graph, "random")
+
+    # Internet Graph Generation and Visualization
+    internet_graph = build_internet_graph()
+    # see_graph(internet_graph)
+    write_to_a_file(internet_graph, "internet")
+    
+    # # Small World Graph Generation and Visualization
+    # small_world_graph = build_small_world_graph()
+    # see_graph(small_world_graph)
+    # write_to_a_file(small_world_graph, "small_world")
       
 
 
