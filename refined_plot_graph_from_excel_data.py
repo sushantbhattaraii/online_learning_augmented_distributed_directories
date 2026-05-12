@@ -9,7 +9,7 @@ import os
 
 # Gather and sort all Excel files
 
-files = sorted(glob.glob('./results/data_for_paper/256nodes_diameter5_cutoff*.xlsx'))
+files = sorted(glob.glob('./results/small_world_graphs/128nodes_diameter138_cutoff*.xlsx'))
 
 # Extract node count and overlap from filename
 m = re.search(r'(\d+)nodes_', files[0])
@@ -31,6 +31,7 @@ for idx, f in enumerate(files):
     # mean_min_error = df.groupby('fraction')['min_error'].mean()
     mean_stretch = df.groupby('fraction')['stretch'].mean()
     mean_stretch_arrow = df.groupby('fraction')['stretch_arrow'].mean()
+    mean_stretch_parrow = df.groupby('fraction')['stretch_parrow'].mean()
     
     # mean_max_error.index = mean_max_error.index * int(node_count)
     # mean_min_error.index = mean_min_error.index * int(node_count)
@@ -65,7 +66,7 @@ for idx, f in enumerate(files):
         mean_stretch.index,
         mean_stretch.values,
         marker='o',
-        label=f'PArrow Stretch for Error ≤ {actual_cutoff}',
+        label=f'OPArrow Stretch for Error ≤ {actual_cutoff}',
         color=cmap(2 * idx + 1)
     )
 
@@ -75,6 +76,14 @@ for idx, f in enumerate(files):
         marker='o',
         label=f'Arrow Stretch for Error ≤ {actual_cutoff}',
         color=cmap(2 * idx + 2)
+    )
+
+    ax3.plot(
+        mean_stretch_parrow.index,
+        mean_stretch_parrow.values,
+        marker='o',
+        label=f'PArrow Stretch for Error ≤ {actual_cutoff}',
+        color=cmap(2 * idx + 3)
     )
 
     # ax4.plot(
@@ -105,7 +114,7 @@ ax1.legend(loc='best')
 # # ax1.grid(True)
 
 # Format stretch subplot
-ax3.set_ylabel('PArrow and Arrow Stretch')
+ax3.set_ylabel('PArrow and Arrow and OPArrow Stretch')
 # ax3.set_xlabel(f'Number of predicted nodes among {node_count} nodes (# of operations)')
 ax3.set_xlabel(f'Number of operations')
 ax3.set_title(f'PArrow & Arrow Stretch vs Number of operations')
