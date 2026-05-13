@@ -8,7 +8,7 @@ from fractions import Fraction
 from save_data_to_excel import *
 import random
 
-def make_fractions(num_nodes, mode):
+def make_num_of_operations(num_nodes, mode):
     base = num_nodes // 32  # 128->4, 256->8, 512->16, 1024->32, ...
     bounds = [(base * (2**i), base * (2**(i+1))) for i in range(5)]  # (lo, hi)
 
@@ -39,29 +39,29 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     # print("Total nodes in the graph: ", nodes_num)
     # print("Type of n: ", type(nodes_num))
         
-    fractions = [64]
+    num_of_operations = [16, 32, 64, 128, 256]
     # while nodes_num > 1:
     #     nodes_num //=2
-    #     fractions.append(nodes_num)
+    #     num_of_operations.append(nodes_num)
 
-    # fractions = fractions[::-1]
-    # fractions = make_fractions(nodes_num, mode="random")
+    # num_of_operations = num_of_operations[::-1]
+    # num_of_operations = make_num_of_operations(nodes_num, mode="random")
     # for i in range(0, 5):
-    #         fractions[i] = random.randint(1, int(nodes_num))
-    #         if fractions[i] > (nodes_num / (2**(i+1))) and fractions[i] <= (nodes_num / (2**(i))):
+    #         num_of_operations[i] = random.randint(1, int(nodes_num))
+    #         if num_of_operations[i] > (nodes_num / (2**(i+1))) and num_of_operations[i] <= (nodes_num / (2**(i))):
     #             continue
 
-    fractions = sorted(fractions)
+    num_of_operations = sorted(num_of_operations)
 
-    # print("Fractions to be used here: ", fractions)
+    # print("num_of_operations to be used here: ", num_of_operations)
     # exit()
 
     for rep in range(repetitions):
         # The four fraction values
-        # fractions = [n/2, n/4, n/8, n/16, n/32, n/64, n/128]
-        # fractions = [10, 100, 1000, 10000]
+        # num_of_operations = [n/2, n/4, n/8, n/16, n/32, n/64, n/128]
+        # num_of_operations = [10, 100, 1000, 10000]
         
-        # print("Fractions to be used: ", fractions)
+        # print("num_of_operations to be used: ", num_of_operations)
 
         pattern = re.compile(
             r"Overall max error \(max_i\(distance_in_G / diameter_G\)\) =\s*([0-9.+\-eE]+)"
@@ -112,7 +112,7 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
         )
 
 
-        for frac in fractions:
+        for frac in num_of_operations:
             print(f"\n=== Running run.py with --operations {frac}  and Iteration {rep} ===")
             proc = subprocess.Popen(
                 ["python", "run.py", "--fraction", str(frac), "--network", str(network_file_name), "--cutoff", str(error_cutoff), "--overlap", str(overlap)],
@@ -194,11 +194,11 @@ def main(network_file_name, repetitions, error_cutoff, overlap):
     # filename = str(nodes_count[0])+"nodes_diameter"+str(diameter_value)+"_cutoff"+str(error_cutoff)+"-repetitions"+str(repetitions)+".png"
     filename = str(nodes_count[0])+"nodes_diameter"+str(diameter_value)+"_cutoff"+str(error_cutoff)+"-repetitions"+str(repetitions)+ "-overlap"+str(overlap)+".png"
 
-    # plot_error_and_stretch_graph_with_boxplot(fractions, errors, filename, repetitions, stretches, error_cutoff, overlap)
-    save_error_stretch_to_excel(fractions, max_errors, min_errors, stretches, stretches_arrow, stretches_parrow, diameters_T, diameters_mst, diameters_steiner_tree, weights_mst, weights_T, weights_ST, filename, repetitions, error_cutoff)
+    # plot_error_and_stretch_graph_with_boxplot(num_of_operations, errors, filename, repetitions, stretches, error_cutoff, overlap)
+    save_error_stretch_to_excel(num_of_operations, max_errors, min_errors, stretches, stretches_arrow, stretches_parrow, diameters_T, diameters_mst, diameters_steiner_tree, weights_mst, weights_T, weights_ST, filename, repetitions, error_cutoff)
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser(description="Running the experiment with different fractions of predicted nodes and with different graphs... ")
+    p = argparse.ArgumentParser(description="Running the experiment with different num_of_operations of predicted nodes and with different graphs... ")
     p.add_argument(
         "-n",
         "--network",
