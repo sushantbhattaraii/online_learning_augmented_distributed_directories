@@ -2,11 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Filenames for the raw data
-file_inf = "1024nodes_diameter115_cutoffinf-repetitions50-overlap100.xlsx"
+file_inf = "256nodes_diameter96_cutoff5.0-repetitions50-overlap100.xlsx"
 # file_2_0 = "512nodes_diameter4_cutoff2.0-repetitions50-overlap100.xlsx"
 
 # Load the datasets
-df_inf = pd.read_excel(f"./../results/small_world_graphs/first_way/3/{file_inf}")
+df_inf = pd.read_excel(f"./../results/internet_graphs/second_way/3/{file_inf}")
 # df_2_0 = pd.read_excel(f"./../results/data_for_paper2/first/{file_2_0}")
 
 # Group by fraction and calculate the mean for both metrics
