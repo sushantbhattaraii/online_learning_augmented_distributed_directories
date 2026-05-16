@@ -4,19 +4,19 @@ import sys
 import os
 
 def load_graph(network_file_name):
-    graphml_file = os.path.join('internet_graphs2', str(network_file_name))
+    graphml_file = os.path.join('grid_graphs', str(network_file_name))
     G_example = nx.read_graphml(graphml_file)
     G_example = nx.relabel_nodes(G_example, lambda x: int(x))
     return G_example
 
 def write_to_a_file(graph, param, num_nodes, diameter):
-    graph_name = './internet_graphs2/mst/' + str(num_nodes) + str(param) + '_diameter' + str(diameter) + 'test.edgelist'
+    graph_name = './grid_graphs/mst/' + str(num_nodes) + str(param) + '_diameter' + str(diameter) + 'test.edgelist'
     nx.write_graphml(graph, graph_name)
     return graph_name
 
 
 if __name__ == '__main__':
-    network_file_name = "1024internet_diameter7test.edgelist"
+    network_file_name = "1024grid_diameter62test.edgelist"
     num_nodes = 1024
     # network_file_name = "256random_diameter5test.edgelist"
     # network_file_name = "512random_diameter4test.edgelist"
